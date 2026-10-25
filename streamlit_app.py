@@ -13,12 +13,18 @@ import numpy as np
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
+import inspect
+
 # Check Streamlit secrets for GEMINI_API_KEY if running in Streamlit Cloud
 try:
     if hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets and not os.getenv("GEMINI_API_KEY"):
         os.environ["GEMINI_API_KEY"] = st.secrets["GEMINI_API_KEY"]
 except Exception:
     pass
+
+# Responsive width helper compatible across Streamlit versions (avoids deprecation warnings)
+HAS_WIDTH = "width" in inspect.signature(st.plotly_chart).parameters
+RESPONSIVE_WIDTH = {"width": "stretch"} if HAS_WIDTH else {"use_container_width": True}
 
 from backend.app.config import settings
 from backend.app.database import init_db
@@ -125,7 +131,7 @@ if menu == "⚡ Day-Ahead Decision Center":
     with col_ctrl1:
         selected_date = st.date_input(
             "Delivery Date (January 2026)",
-            value=date(2026, 1, 5),
+            value=st.session_state.get("date", date(2026, 1, 5)),
             min_value=date(2026, 1, 1),
             max_value=date(2026, 1, 31)
         )
@@ -142,19 +148,19 @@ if menu == "⚡ Day-Ahead Decision Center":
     with col_ctrl3:
         st.markdown("<span style='font-size: 0.75rem; color: #94a3b8;'>Scenario Presets:</span>", unsafe_allow_html=True)
         preset_cols = st.columns(5)
-        if preset_cols[0].button("Jan 01 (NY)", use_container_width=True):
+        if preset_cols[0].button("Jan 01 (NY)", **RESPONSIVE_WIDTH):
             st.session_state["date"] = date(2026, 1, 1)
             st.rerun()
-        if preset_cols[1].button("Jan 05 (Deficit)", use_container_width=True):
+        if preset_cols[1].button("Jan 05 (Deficit)", **RESPONSIVE_WIDTH):
             st.session_state["date"] = date(2026, 1, 5)
             st.rerun()
-        if preset_cols[2].button("Jan 12 (Stable)", use_container_width=True):
+        if preset_cols[2].button("Jan 12 (Stable)", **RESPONSIVE_WIDTH):
             st.session_state["date"] = date(2026, 1, 12)
             st.rerun()
-        if preset_cols[3].button("Jan 18 (Calm)", use_container_width=True):
+        if preset_cols[3].button("Jan 18 (Calm)", **RESPONSIVE_WIDTH):
             st.session_state["date"] = date(2026, 1, 18)
             st.rerun()
-        if preset_cols[4].button("Jan 25 (Gale)", use_container_width=True):
+        if preset_cols[4].button("Jan 25 (Gale)", **RESPONSIVE_WIDTH):
             st.session_state["date"] = date(2026, 1, 25)
             st.rerun()
 
@@ -239,7 +245,7 @@ if menu == "⚡ Day-Ahead Decision Center":
             height=380,
             margin=dict(l=20, r=20, t=40, b=20)
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, **RESPONSIVE_WIDTH)
 
         # Wholesale Power Purchase Simulator
         st.markdown("#### ⚡ Wholesale Thermal Power Purchase Simulator")
@@ -301,7 +307,7 @@ if menu == "⚡ Day-Ahead Decision Center":
             height=320,
             margin=dict(l=20, r=20, t=40, b=20)
         )
-        st.plotly_chart(fig_stack, use_container_width=True)
+        st.plotly_chart(fig_stack, **RESPONSIVE_WIDTH)
 
     else:
         st.warning(f"No aligned data found for {selected_date_str}. Please verify database records.")
@@ -380,7 +386,7 @@ elif menu == "📊 Quantitative Error Analytics":
         )
         fig_hour.update_yaxes(title_text="MAE (MW)", secondary_y=False)
         fig_hour.update_yaxes(title_text="Mean Bias (MW)", secondary_y=True)
-        st.plotly_chart(fig_hour, use_container_width=True)
+        st.plotly_chart(fig_hour, **RESPONSIVE_WIDTH)
 
 # ----------------- VIEW 3: UNCERTAINTY CONE & LEAD-TIME -----------------
 elif menu == "⏳ Horizon Uncertainty Cone":
@@ -414,7 +420,7 @@ elif menu == "⏳ Horizon Uncertainty Cone":
         height=360,
         margin=dict(l=20, r=20, t=40, b=20)
     )
-    st.plotly_chart(fig_lead, use_container_width=True)
+    st.plotly_chart(fig_lead, **RESPONSIVE_WIDTH)
 
     col_strat1, col_strat2 = st.columns(2)
     with col_strat1:
@@ -508,7 +514,7 @@ elif menu == "📋 Settlement Data Explorer":
                 "settlementPeriod", "startTime", "actualMW", "forecastMW", 
                 "errorMW", "percError", "publishTime", "leadHours"
             ]],
-            use_container_width=True,
+            **RESPONSIVE_WIDTH,
             height=400
         )
 
