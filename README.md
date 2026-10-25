@@ -87,7 +87,3 @@ The application uses SQLite for data storage. The database file is located at `d
 
 - **Elexon BMRA API**: Provides real-time and historical market data.
 - **Wind Data**: Historical wind generation data (can be populated from Elexon API or other sources).
-
-## License
-
-This project is licensed under the terms of the MIT license.
