@@ -110,8 +110,7 @@ def main():
                 "📊 Quantitative Error Analytics",
                 "⏳ Horizon Uncertainty Cone",
                 "🤖 AI Trading Copilot",
-                "📋 Settlement Data Explorer",
-                "🎥 Presentation & Tech Review"
+                "📋 Settlement Data Explorer"
             ]
         )
 
@@ -528,48 +527,7 @@ def main():
                 mime="text/csv"
             )
 
-    # ----------------- VIEW 6: PRESENTATION & TECH REVIEW -----------------
-    elif menu == "🎥 Presentation & Tech Review":
-        st.markdown("### 🎥 Interactive Presentation & Technical Review Guide")
-        st.markdown("Structured talking points and architecture notes for the required **10-minute video demo** (Section 3.1).")
 
-        pres_tab1, pres_tab2 = st.tabs(["Part 1: Client Commercial Pitch (5 min)", "Part 2: Tech Lead Review (5 min)"])
-
-        with pres_tab1:
-            st.markdown("""
-            #### Part 1: Client Commercial Pitch (Output of Pilot Project)
-
-            **1. Problem Statement:**
-            - UK wholesale power purchase commitments must be finalized on EPEX SPOT / Nord Pool by **12:00 GMT on Day D-1**.
-            - Wind intermittency leaves utility books exposed to the **Balancing Mechanism cash-out penalties (System Buy Price)**, regularly exceeding £300 to £1,000+/MWh.
-
-            **2. Key Findings for January 2026:**
-            - Systemic **+1,806 MW over-prediction bias** discovered across National Grid ESO forecasts.
-            - Desks bidding unhedged forecasts incurred severe shortfall penalties.
-
-            **3. Live Demo Walkthrough:**
-            - Show the **Day-Ahead Decision Center** locking onto D-1 12:00 gate closure.
-            - Demonstrate the **Thermal Procurement Simulator**: sizing thermal contracts and applying the calibrated **P90 Downside Risk Buffer**.
-            - Show how this eliminates **90% of balancing shortfall exposures**.
-            """)
-
-        with pres_tab2:
-            st.markdown("""
-            #### Part 2: Technical Lead Code & Architecture Review
-
-            **1. Decoupled Architecture:**
-            - **FastAPI / Python Service Layer:** High-performance data ingestion (`elexon_service.py`), statistical error modeling (`metrics_service.py`), and wholesale procurement algorithms (`procurement_service.py`).
-            - **Streamlit Frontend:** Reactive data visualization with Plotly charts, instant parameter simulation, and export capabilities.
-            - **Embedded SQLite Database:** Pre-seeded with 1,488 actuals and 19,272 forecasts for sub-5ms queries.
-
-            **2. Data Normalization & Mathematical Rigor:**
-            - Resolved 30-min settlement intervals (`FUELHH`) against hourly publication buckets (`WINDFOR`).
-            - Implemented composite SQL index queries on `(start_time, publish_time)`.
-            - Formulated metrics: MAE, RMSE, WAPE, Mean Bias, and empirical quantiles ($P_{10}$, $P_{50}$, $P_{90}$).
-
-            **3. Cloud Deployment Readiness:**
-            - Streamlit Cloud, Heroku, Docker, and Vercel compatible with pinned `requirements.txt`.
-            """)
 
 if __name__ == "__main__":
     main()
