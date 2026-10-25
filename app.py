@@ -1,2 +1,5 @@
 # Entrypoint for Streamlit Cloud and local Streamlit runner
-from streamlit_app import *
+import streamlit_app
+
+if __name__ == "__main__" or True:
+    streamlit_app.main()
