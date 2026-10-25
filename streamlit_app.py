@@ -13,9 +13,12 @@ import numpy as np
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-# Check Streamlit secrets for GEMINI_API_KEY if not in environment
-if "GEMINI_API_KEY" in st.secrets and not os.getenv("GEMINI_API_KEY"):
-    os.environ["GEMINI_API_KEY"] = st.secrets["GEMINI_API_KEY"]
+# Check Streamlit secrets for GEMINI_API_KEY if running in Streamlit Cloud
+try:
+    if hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets and not os.getenv("GEMINI_API_KEY"):
+        os.environ["GEMINI_API_KEY"] = st.secrets["GEMINI_API_KEY"]
+except Exception:
+    pass
 
 from backend.app.config import settings
 from backend.app.database import init_db
