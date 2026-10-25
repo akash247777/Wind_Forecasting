@@ -85,5 +85,62 @@ The application uses SQLite for data storage. The database file is located at `d
 
 ## Data Sources
 
-- **Elexon BMRA API**: Provides real-time and historical market data.
-- **Wind Data**: Historical wind generation data (can be populated from Elexon API or other sources).
+- **Elexon BMRS API**: Provides national level half-hourly wind actual generation (`FUELHH`) and published wind forecasts (`WINDFOR`).
+
+## ☁️ Deploying to Streamlit Cloud (Community Cloud)
+
+You can deploy and host this application on [Streamlit Community Cloud](https://share.streamlit.io/) with zero configuration:
+
+1. **Sign in to Streamlit Community Cloud**:
+   Go to [share.streamlit.io](https://share.streamlit.io/) and log in with your GitHub account (`akash247777`).
+
+2. **Create a New App**:
+   - Click **"Create app"** > **"I already have an app"**.
+   - **Repository**: `akash247777/Wind_Forecasting`
+   - **Branch**: `main`
+   - **Main file path**: `streamlit_app.py` (or `app.py`)
+
+3. **Configure Secrets (Gemini API Key)**:
+   - Click **"Advanced settings..."** before deploying.
+   - In the **Secrets** text box, add:
+     ```toml
+     GEMINI_API_KEY = "your_gemini_api_key_here"
+     ```
+   - Click **Save**.
+
+4. **Deploy**:
+   - Click **"Deploy"**. Streamlit Cloud will automatically install dependencies from `requirements.txt` and launch the interactive trading desk portal!
+
+---
+
+## 📁 Repository Structure
+
+```
+├── streamlit_app.py               # Main Streamlit Cloud application entrypoint
+├── app.py                         # Root alias for Streamlit execution
+├── .streamlit/
+│   └── config.toml                # Institutional dark theme & UI settings
+├── backend/
+│   ├── app/
+│   │   ├── main.py                # FastAPI REST API server
+│   │   ├── config.py              # Settings & directory configuration
+│   │   ├── database.py            # SQLite schema & connection manager
+│   │   ├── models.py              # Pydantic schemas
+│   │   ├── services/
+│   │   │   ├── elexon_service.py  # Elexon BMRS API ingestor (FUELHH & WINDFOR)
+│   │   │   ├── metrics_service.py # Accuracy engine (MAE, RMSE, WAPE, Bias, P10/P90)
+│   │   │   ├── procurement_service.py # Day-ahead net thermal procurement & buffer sizing
+│   │   │   └── ai_service.py      # Gemini 2.5 Flash trading analyst & copilot
+│   │   └── routers/               # FastAPI modular endpoints
+│   ├── data/
+│   │   └── wind_forecasting.db    # Pre-seeded SQLite database for January 2026
+│   ├── seed_data.py               # Automated Elexon data sync script
+│   └── run.py                     # Backend runner script
+├── frontend/
+│   ├── app.py                     # Streamlit frontend alias (streamlit run frontend/app.py)
+│   ├── src/                       # React frontend source (optional alternative UI)
+│   └── package.json
+├── requirements.txt               # Pinned Python dependencies (streamlit, plotly, fastapi, etc.)
+├── .env.example                   # Environment variables template
+└── README.md
+```
